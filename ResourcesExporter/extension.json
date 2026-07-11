@@ -1,0 +1,10 @@
+{
+    "extension_api": 1,
+    "name": "Resources Exporter",
+    "version": "1.0.0",
+    "minimum_renderdoc": "1.17",
+    "description": "Export mesh to FBX or OBJ format, with texture and shader export (refactored modular version)，
+Quoted and adapted from ：https://github.com/aRincloud/renderdoc2fbx-main and https://github.com/chineseoldghost/csv2fbx",
+    "author": "DQ-Leo<38856785@qq.com>",
+    "url": "https://github.com/nextwentA/Renderdoc_ResourcesExporter"
+}
