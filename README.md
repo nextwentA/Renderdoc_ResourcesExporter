@@ -78,12 +78,12 @@ Mesh Preview -> 插件 -> Quick Export，跳过对话框，直接用上次保存
 - **Export Inputs**：导出当前 Draw Call 绑定的所有输入贴图
 - **Export Outputs**：导出渲染目标（颜色 + 深度）
 - 支持格式：PNG / DDS / TGA / BMP / HDR / EXR
-![image](image/‌InstructionsForUse_004.png)
+![image](Image/‌InstructionsForUse_004.png)
 
 ### Shader 导出
 
 选择阶段（VS / PS / GS / HS / DS / CS），格式选 Disasm txt 会输出反汇编文本，Binary 输出原始 DXBC/SPIRV 字节码。
-![image](image/‌InstructionsForUse_006.png)
+![image](Image/‌InstructionsForUse_006.png)
 
 ---
 
