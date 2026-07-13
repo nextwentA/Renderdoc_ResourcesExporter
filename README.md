@@ -13,7 +13,7 @@ RenderDoc 资源导出插件，支持导出 FBX/OBJ 格式，附带贴图和 Sha
 ![image](Image/Install_001.png)
 ![image](Image/Install_002.png)
 3. 在 Mesh Preview 面板中点击插件图标（一个黄色拼图图案），菜单里会出现 **Export Resource** 和 **Quick Export**
-![image](Image/Install_003.png)
+![image](Image/‌InstructionsForUse_001.png)
 
 
 **系统要求**：RenderDoc >= 1.17，Windows
