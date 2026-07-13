@@ -10,10 +10,10 @@ RenderDoc 资源导出插件，支持导出 FBX/OBJ 格式，附带贴图和 Sha
 
 1. 运行 `install.bat`，脚本会自动定位 RenderDoc 扩展目录并复制文件
 2. 重启 RenderDoc或者`Tools-Manage Extensions-ResourcesExporter-Reload`
-![image](image/Install_001.png)
-![image](image/Install_002.png)
+![image](Image/Install_001.png)
+![image](Image/Install_002.png)
 3. 在 Mesh Preview 面板中点击插件图标（一个黄色拼图图案），菜单里会出现 **Export Resource** 和 **Quick Export**
-![image](image/Install_003.png)
+![image](Image/Install_003.png)
 
 
 **系统要求**：RenderDoc >= 1.17，Windows
@@ -25,7 +25,7 @@ RenderDoc 资源导出插件，支持导出 FBX/OBJ 格式，附带贴图和 Sha
 ### 普通导出
 
 Mesh Preview -> 插件 -> Export Resource，弹出选项对话框后配置好参数点 OK，选择保存路径。
-![image](image/‌InstructionsForUse_001.png)
+![image](Image/‌InstructionsForUse_001.png)
 ### 快速导出
 
 Mesh Preview -> 插件 -> Quick Export，跳过对话框，直接用上次保存的配置，只弹路径选择框。
@@ -36,8 +36,8 @@ Mesh Preview -> 插件 -> Quick Export，跳过对话框，直接用上次保存
 
 格式：`100,200-210,300`（逗号分隔单个 EID，短横线表示含两端的连续范围）
 
-![image](image/‌InstructionsForUse_002.png)
-![image](image/‌InstructionsForUse_003.png)
+![image](Image/‌InstructionsForUse_002.png)
+![image](Image/‌InstructionsForUse_003.png)
 
 
 ---
