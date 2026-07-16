@@ -61,25 +61,41 @@ def build_settings(settings):
 
 def export_mesh(save_path, mapper, data, attr_list, pyrenderdoc, fbx_info, fbx_errors):
     """Dispatch to FBX or OBJ exporter based on EXPORT_FORMAT in *mapper*."""
+    import traceback as _tb
+
     export_format = mapper.get("EXPORT_FORMAT", "FBX")
     mesh_mode     = mapper.get("MESH_MODE", "VS Input")
+
+    _caught = []
+
+    def _safe(fn):
+        """Wrap *fn* so exceptions are caught inside the BlockInvoke thread."""
+        def _wrapper(controller):
+            try:
+                fn(controller)
+            except Exception:
+                _caught.append(_tb.format_exc())
+        return _wrapper
 
     if mesh_mode == "VS Input":
         if export_format == "OBJ":
             pyrenderdoc.Replay().BlockInvoke(
-                partial(write_obj, save_path, mapper, data, attr_list)
+                _safe(partial(write_obj, save_path, mapper, data, attr_list))
             )
         else:
             pyrenderdoc.Replay().BlockInvoke(
-                partial(write_fbx, save_path, mapper, data, attr_list)
+                _safe(partial(write_fbx, save_path, mapper, data, attr_list))
             )
     else:
         # data / attr_list here are the VS Input attributes (UV, Normal, ...)
         # collected by the caller for pass-through into VS Output export.
         pyrenderdoc.Replay().BlockInvoke(
-            partial(write_vsout_fbx, save_path, mapper, fbx_info, fbx_errors,
-                    data, attr_list)
+            _safe(partial(write_vsout_fbx, save_path, mapper, fbx_info, fbx_errors,
+                    data, attr_list))
         )
+
+    if _caught:
+        raise RuntimeError("BlockInvoke callback raised:\n\n" + _caught[0])
 
 
 def export_secondary(save_dir, mapper, pyrenderdoc):

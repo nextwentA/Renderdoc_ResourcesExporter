@@ -279,14 +279,21 @@ def write_fbx(save_path, mapper, data, attr_list, controller):
     idx_len  = len(idx_list)
 
     def transform_unreal_vector(values):
-        # Export raw vertex-buffer coordinates without any engine-specific
-        # rotation or mirroring.  VS Input positions are already in the
-        # coordinate system stored in the GPU buffer; applying extra transforms
-        # here causes the model to appear rotated/mirrored in the DCC tool.
-        return list(values[:3])
+        # Convert from left-handed (game engine) to right-handed (FBX) coordinate system
+        # by flipping the X axis. This prevents the model from appearing mirrored.
+        # Use safe indexing in case the attribute has fewer than 3 components.
+        x = -values[0] if len(values) > 0 else 0.0
+        y = values[1]  if len(values) > 1 else 0.0
+        z = values[2]  if len(values) > 2 else 0.0
+        return [x, y, z]
 
     def reorder_triangle_corners(values):
-        return list(values)
+        # Flip winding order (swap corner 0 and corner 1 of each triangle)
+        # to compensate for the X-axis flip applied in transform_unreal_vector.
+        result = list(values)
+        for i in range(0, len(result) - 2, 3):
+            result[i], result[i + 1] = result[i + 1], result[i]
+        return result
 
     class ProcessHandler(object):
         def run(self):
@@ -341,7 +348,7 @@ def write_fbx(save_path, mapper, data, attr_list, controller):
         def run_binormals(self):
             if not vertex_data.get(BINORMAL):
                 return
-            transformed = [transform_unreal_vector(v) for v in value_dict[BINORMAL]]
+            transformed = [transform_unreal_vector(v) for v in reorder_triangle_corners(value_dict[BINORMAL])]
             binormals = [str(v) for values in transformed for v in values]
             ARGS["LayerElementBiNormal"] = """
                 LayerElementBinormal: 0 {
@@ -431,10 +438,12 @@ def write_fbx(save_path, mapper, data, attr_list, controller):
         def run_uv(self):
             if not value_dict.get(UV):
                 return
-            # UV is per-face-corner (same as normals): use Direct mapping.
+            # UV is per-face-corner; must reorder to match the winding-order
+            # swap applied to PolygonVertexIndex in run_polygons.
+            uv_reordered = reorder_triangle_corners(value_dict[UV])
             uvs = [
                 str((1 - v if flip_u else v) if i == 0 else (1 - v if flip_v else v))
-                for values in value_dict[UV]
+                for values in uv_reordered
                 for i, v in enumerate(values)
             ]
             ARGS["LayerElementUV"] = """
@@ -461,9 +470,10 @@ def write_fbx(save_path, mapper, data, attr_list, controller):
         def run_uv2(self):
             if not value_dict.get(UV2):
                 return
+            uv_reordered = reorder_triangle_corners(value_dict[UV2])
             uvs = [
                 str((1 - v if flip_u else v) if i == 0 else (1 - v if flip_v else v))
-                for values in value_dict[UV2]
+                for values in uv_reordered
                 for i, v in enumerate(values)
             ]
             ARGS["LayerElementUV2"] = """
@@ -490,9 +500,10 @@ def write_fbx(save_path, mapper, data, attr_list, controller):
         def run_uv3(self):
             if not value_dict.get(UV3):
                 return
+            uv_reordered = reorder_triangle_corners(value_dict[UV3])
             uvs = [
                 str((1 - v if flip_u else v) if i == 0 else (1 - v if flip_v else v))
-                for values in value_dict[UV3]
+                for values in uv_reordered
                 for i, v in enumerate(values)
             ]
             ARGS["LayerElementUV3"] = """
@@ -519,9 +530,10 @@ def write_fbx(save_path, mapper, data, attr_list, controller):
         def run_uv4(self):
             if not value_dict.get(UV4):
                 return
+            uv_reordered = reorder_triangle_corners(value_dict[UV4])
             uvs = [
                 str((1 - v if flip_u else v) if i == 0 else (1 - v if flip_v else v))
-                for values in value_dict[UV4]
+                for values in uv_reordered
                 for i, v in enumerate(values)
             ]
             ARGS["LayerElementUV4"] = """
